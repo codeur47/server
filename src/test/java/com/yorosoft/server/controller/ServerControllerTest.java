@@ -34,7 +34,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @ContextConfiguration(classes = {ServerController.class})
 @ExtendWith(SpringExtension.class)
-public class ServerControllerTest {
+class ServerControllerTest {
     @Autowired
     private ServerController serverController;
 
@@ -42,7 +42,7 @@ public class ServerControllerTest {
     private ServerServiceImpl serverServiceImpl;
 
     @Test
-    public void testGetServers() throws InterruptedException {
+    void testGetServers() throws InterruptedException {
         ServerRepo serverRepo = mock(ServerRepo.class);
         when(serverRepo.findAll((org.springframework.data.domain.Pageable) any()))
                 .thenReturn(new PageImpl<Server>(new ArrayList<Server>()));
@@ -61,11 +61,10 @@ public class ServerControllerTest {
     }
 
     @Test
-    public void testSaveServer() {
+    void testSaveServer() {
         Server server = new Server();
         server.setStatus(Status.SERVER_UP);
         server.setId(123L);
-        server.setImageUrl("https://example.org/example");
         server.setName("Name");
         server.setMemory("Memory");
         server.setIpAddress("42 Main St");
@@ -77,7 +76,6 @@ public class ServerControllerTest {
         Server server1 = new Server();
         server1.setStatus(Status.SERVER_UP);
         server1.setId(123L);
-        server1.setImageUrl("https://example.org/example");
         server1.setName("Name");
         server1.setMemory("Memory");
         server1.setIpAddress("42 Main St");
@@ -97,7 +95,7 @@ public class ServerControllerTest {
     }
 
     @Test
-    public void testDeleteServer() {
+    void testDeleteServer() {
         ServerRepo serverRepo = mock(ServerRepo.class);
         doNothing().when(serverRepo).deleteById((Long) any());
         ResponseEntity<Response> actualDeleteServerResult = (new ServerController(new ServerServiceImpl(serverRepo)))
@@ -116,36 +114,16 @@ public class ServerControllerTest {
     }
 
     @Test
-    public void testGetServer() throws Exception {
+    void testGetServer() throws Exception {
         Server server = new Server();
         server.setStatus(Status.SERVER_UP);
         server.setId(123L);
-        server.setImageUrl("https://example.org/example");
         server.setName("Name");
         server.setMemory("Memory");
         server.setIpAddress("42 Main St");
         server.setType("Type");
         when(this.serverServiceImpl.get((Long) any())).thenReturn(server);
         MockHttpServletRequestBuilder getResult = MockMvcRequestBuilders.get("/server/get/{id}", 123L);
-        getResult.accept("https://example.org/example");
-        ResultActions actualPerformResult = MockMvcBuilders.standaloneSetup(this.serverController)
-                .build()
-                .perform(getResult);
-        actualPerformResult.andExpect(MockMvcResultMatchers.status().is(406));
-    }
-
-    @Test
-    public void testPingServer() throws Exception {
-        Server server = new Server();
-        server.setStatus(Status.SERVER_UP);
-        server.setId(123L);
-        server.setImageUrl("https://example.org/example");
-        server.setName("Name");
-        server.setMemory("Memory");
-        server.setIpAddress("42 Main St");
-        server.setType("Type");
-        when(this.serverServiceImpl.ping((String) any())).thenReturn(server);
-        MockHttpServletRequestBuilder getResult = MockMvcRequestBuilders.get("/server/ping/{ipAddress}", "42 Main St");
         getResult.accept("https://example.org/example");
         ResultActions actualPerformResult = MockMvcBuilders.standaloneSetup(this.serverController)
                 .build()
